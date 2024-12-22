@@ -1,46 +1,48 @@
 import React from "react";
 import UseAuth from "../../Hooks/UseAuth";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const AddJob = () => {
+  const { user } = UseAuth();
+  const navigate = useNavigate();
 
-    const {user} = UseAuth();
+  const handleAddJob = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    // console.log(formData.entries());
+    const initialData = Object.fromEntries(formData.entries());
+    console.log(initialData);
+    const { min, max, currency, ...newJob } = initialData;
+    // console.log(newJob);
+    newJob.salaryRange = {
+      min,
+      max,
+      currency,
+    };
+    console.log(newJob);
 
-    const handleAddJob = e => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        // console.log(formData.entries());
-        const initialData = Object.fromEntries(formData.entries())
-        console.log(initialData);
-        const {min, max, currency, ...newJob } = initialData;
-        // console.log(newJob);
-        newJob.salaryRange = {
-            min, max, currency
+    fetch("http://localhost:5000/jobs", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newJob),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your has been added.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          navigate("/myPostedJobs");
         }
-        console.log(newJob);
-
-        fetch('http://localhost:5000/jobs', {
-            method: 'POST',
-            headers: {
-                'content-type' : 'application/json'
-            },
-            body: JSON.stringify(newJob)
-        })
-        .then(res => res.json())
-        .then(data => {
-             if (data.insertedId) {
-                      Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Your has been added.",
-                        showConfirmButton: false,
-                        timer: 1500,
-                      });
-                      navigate("/myPostedJobs");
-                    }
-        })
-    }
-   
+      });
+  };
 
   return (
     <div>
@@ -175,7 +177,7 @@ const AddJob = () => {
             <input
               type="text"
               name="hr_name"
-                defaultValue={user.displayName}
+              defaultValue={user.displayName}
               //   onChange={handleChange}
               className="w-full p-2 border rounded-md"
             />
@@ -252,9 +254,11 @@ const AddJob = () => {
           </div>
           {/* Company Logo */}
           <div>
-            <label className="block text-sm font-medium mb-1">Company logo</label>
+            <label className="block text-sm font-medium mb-1">
+              Company logo
+            </label>
             <input
-              type="text"
+              type="url"
               name="company-logo"
               //   value={hr_email}
               //   onChange={handleChange}

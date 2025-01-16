@@ -4,15 +4,15 @@ import { useContext, useState } from "react";
 import AuthContext from "../../Context/AuthContext/AuthContext";
 import SocialLogin from "../Shared/SocialLogin";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignIn = () => {
+  const { signInUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const {signInUser} = useContext(AuthContext);
-    const [error, setError] = useState('');
-    const location = useLocation();
-    const navigate = useNavigate();
-
-    const from = location.state || '/';
+  const from = location.state || "/";
 
   const handleSignin = (e) => {
     e.preventDefault();
@@ -23,12 +23,16 @@ const SignIn = () => {
 
     console.log(email, password);
 
-   
-
     signInUser(email, password)
       .then((result) => {
-        console.log(result.user);
-        navigate(from);
+        console.log(result.user.email);
+        const user = { email: email };
+        axios
+          .post("http://localhost:5000/jwt", user, { withCredentials: true })
+          .then((res) => {
+            console.log(res.data);
+          });
+        // navigate(from);
       })
       .catch((error) => {
         console.log(error);
@@ -36,7 +40,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
+    <div className="hero bg-base-200 min-h-screen mb-10">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left w-96">
           <Lottie animationData={signinLottieData}></Lottie>

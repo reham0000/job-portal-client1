@@ -1,11 +1,12 @@
-import React, { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
-import AuthContext from "../../Context/AuthContext/AuthContext";
 import logo from "../../assets/job-portal.png";
-import './navbar.css'
+import "./navbar.css";
+import UseAuth from "../../Hooks/UseAuth";
 
 const Navbar = () => {
-  const { user, signOutUser } = useContext(AuthContext);
+  const { user, signOutUser } = UseAuth();
+  // console.log(user);
+  
 
   const handleSignOut = () => {
     signOutUser()
@@ -13,7 +14,7 @@ const Navbar = () => {
         console.log("successful sign out");
       })
       .catch((error) => {
-        console.log("failed to sign out. stay here. dont leave me alone");
+        console.log("failed to sign out. stay here. don't leave me alone");
       });
   };
 
@@ -21,6 +22,7 @@ const Navbar = () => {
     <>
       <div className="flex justify-center items-center gap-5 text-lg font-semibold">
         <NavLink to="/">Home</NavLink>
+        <NavLink to="/jobs">Jobs</NavLink>
         <NavLink to="/myApplications">My Applications</NavLink>
         <NavLink to="/addJob">Add a job</NavLink>
         <NavLink to="/myPostedJobs">My Posted Jobs</NavLink>
@@ -63,6 +65,14 @@ const Navbar = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{links}</ul>
       </div>
+      {/* <div>
+        {user && user.photoURL ? (
+            <img src={user.photoURL}  />
+        ) : (
+            <p>No Photo Available</p>
+        )}
+    </div> */}
+      
       <div className="navbar-end">
         {user ? (
           <button onClick={handleSignOut} className="btn">
@@ -70,7 +80,7 @@ const Navbar = () => {
           </button>
         ) : (
           <>
-            <Link to="/register">Register</Link>
+            <Link to="/register" className="mr-5 font-semibold">Register</Link>
             <Link to="/signin" className="btn">
               Sign In
             </Link>

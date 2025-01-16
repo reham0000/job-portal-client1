@@ -187,6 +187,7 @@ const AddJob = () => {
           <div>
             <label className="block text-sm font-medium mb-1">HR Email</label>
             <input
+            readOnly
               type="email"
               name="hr_email"
               defaultValue={user.email}

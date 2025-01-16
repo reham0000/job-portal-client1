@@ -4,38 +4,39 @@ import Swal from "sweetalert2";
 
 const ViewApplications = () => {
   const applications = useLoaderData();
+  console.log(applications);
 
   const handleStatusUpdate = (e, id) => {
     console.log(e.target.value, id);
     const data = {
-        status: e.target.value
-    }
+      status: e.target.value,
+    };
     fetch(`http://localhost:5000/job-applications/${id}`, {
-        method: 'PATCH',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(data)
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
     })
-    .then(res => res.json())
-    .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.modifiedCount) {
-                  Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Status has been Updated.",
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                }
-    })
-  }
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Status Has been updated.",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
+  };
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold font-mono mt-10 mb-10">
-        Applications for this jobs: {applications.length}
-      </h1>
+      <h2 className="text-3xl">
+        Applications for this job: {applications.length}
+      </h2>
       <div className="overflow-x-auto">
         <table className="table">
           {/* head */}
@@ -55,12 +56,11 @@ const ViewApplications = () => {
                 <td>Quality Control Specialist</td>
                 <td>
                   <select
-                  onChange={(e) => handleStatusUpdate(e, app._id)}
-                  defaultValue={app.status || 'Change Status'}
-                  className="select select-bordered select-xs w-full max-w-xs">
-                    <option disabled>
-                      Change Status
-                    </option>
+                    onChange={(e) => handleStatusUpdate(e, app._id)}
+                    defaultValue={app.status || "Change Status"}
+                    className="select select-bordered select-xs w-full max-w-xs"
+                  >
+                    <option disabled>Change Status</option>
                     <option>Under Review</option>
                     <option>Set Interview</option>
                     <option>Hired</option>
